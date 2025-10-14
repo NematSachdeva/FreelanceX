@@ -7,9 +7,11 @@
 - **Health Check**: https://freelancex-backend.onrender.com/api/health
 - **Platform**: Render
 
-### Frontend (To be deployed)
+### Frontend
+- **URL**: https://freelance-x.vercel.app
 - **Platform**: Vercel
 - **Repository**: https://github.com/NematSachdeva/FreelanceX
+- **Status**: ✅ Live
 
 ---
 
@@ -22,7 +24,7 @@ JWT_SECRET=FreelanceX_Secure_JWT_Secret_Key_2024_Production_NematSachdeva
 
 NODE_ENV=production
 
-FRONTEND_URL=https://your-vercel-app.vercel.app
+FRONTEND_URL=https://freelance-x.vercel.app
 ```
 
 **Note:** Update `FRONTEND_URL` after deploying frontend to Vercel.
@@ -39,12 +41,17 @@ NEXT_PUBLIC_API_URL=https://freelancex-backend.onrender.com/api
 
 ## Deployment Steps
 
-### ✅ Backend (Already Deployed)
+### ✅ Backend
 - Platform: Render
 - URL: https://freelancex-backend.onrender.com
-- Status: Live
+- Status: ✅ Live
 
-### 🔄 Frontend (Next Step)
+### ✅ Frontend
+- Platform: Vercel
+- URL: https://freelance-x.vercel.app
+- Status: ✅ Live
+
+### 🔄 Final Step: Update Backend CORS
 
 1. Go to [vercel.com](https://vercel.com)
 2. Sign in with GitHub
@@ -63,9 +70,9 @@ NEXT_PUBLIC_API_URL=https://freelancex-backend.onrender.com/api
 
 ### 🔄 Update Backend CORS (After Frontend Deployment)
 
-Once frontend is deployed, update backend environment variable on Render:
+Update backend environment variable on Render:
 ```env
-FRONTEND_URL=https://your-actual-vercel-url.vercel.app
+FRONTEND_URL=https://freelance-x.vercel.app
 ```
 
 ---
@@ -107,8 +114,8 @@ After deployment, test:
 - [x] Backend deployed to Render
 - [x] MongoDB Atlas configured
 - [x] Backend environment variables set
-- [ ] Frontend deployed to Vercel
-- [ ] Frontend environment variables set
+- [x] Frontend deployed to Vercel
+- [x] Frontend environment variables set
 - [ ] Backend CORS updated with frontend URL
 - [ ] End-to-end testing completed
 - [ ] Custom domain configured (optional)
