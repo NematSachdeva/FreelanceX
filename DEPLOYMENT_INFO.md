@@ -3,9 +3,9 @@
 ## Production URLs
 
 ### Backend API
-- **URL**: https://freelancex-backend.onrender.com
-- **Health Check**: https://freelancex-backend.onrender.com/api/health
-- **Platform**: Render
+- **URL**: https://freelancex-backend.vercel.app
+- **Health Check**: https://freelancex-backend.vercel.app/api/health
+- **Platform**: Vercel
 
 ### Frontend
 - **URL**: https://freelance-x.vercel.app
@@ -15,7 +15,7 @@
 
 ---
 
-## Backend Environment Variables (Render)
+## Backend Environment Variables (Vercel)
 
 ```env
 MONGO_URI=mongodb+srv://freelancex_user:JaiGauriShankar0001@freelancexcluster.mlz8djx.mongodb.net/freelancex?retryWrites=true&w=majority&appName=FreelanceXCluster
@@ -34,7 +34,7 @@ FRONTEND_URL=https://freelance-x.vercel.app
 ## Frontend Environment Variables (Vercel)
 
 ```env
-NEXT_PUBLIC_API_URL=https://freelancex-backend.onrender.com/api
+NEXT_PUBLIC_API_URL=https://freelancex-backend.vercel.app/api
 ```
 
 ---
@@ -42,8 +42,8 @@ NEXT_PUBLIC_API_URL=https://freelancex-backend.onrender.com/api
 ## Deployment Steps
 
 ### ✅ Backend
-- Platform: Render
-- URL: https://freelancex-backend.onrender.com
+- Platform: Vercel
+- URL: https://freelancex-backend.vercel.app
 - Status: ✅ Live
 
 ### ✅ Frontend
