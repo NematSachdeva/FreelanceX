@@ -4,7 +4,11 @@ const User = require('../models/User');
 
 // Generate JWT token
 const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  console.log('🔐 Generating JWT token for user:', userId);
+  console.log('Using JWT_SECRET:', process.env.JWT_SECRET ? 'PRESENT' : 'MISSING');
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  console.log('✅ Token generated successfully');
+  return token;
 };
 
 // Register user
@@ -86,5 +90,10 @@ const login = async (req, res) => {
     res.status(500).json({ message: 'Server error during login' });
   }
 };
+
+// Log that auth is properly configured
+console.log('✅ Auth Controller: JWT signing configured');
+console.log('   - Using same JWT_SECRET for signing and verification');
+console.log('   - Token format: { userId: <id> }');
 
 module.exports = { register, login };

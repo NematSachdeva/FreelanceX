@@ -26,15 +26,37 @@ const getAllServices = async (req, res) => {
     }
 
     const services = await Service.find(query)
-      .populate('createdBy', 'name email profile.avatar')
+      .populate('createdBy', 'name email profile role')
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
 
     const total = await Service.countDocuments(query);
 
+    // Transform services for Android app compatibility
+    const transformedServices = services.map(service => {
+      const serviceObj = service.toObject();
+      
+      // Ensure freelancer data is in the correct format for Android
+      if (serviceObj.createdBy) {
+        serviceObj.freelancer = {
+          _id: serviceObj.createdBy._id,
+          name: serviceObj.createdBy.name,
+          email: serviceObj.createdBy.email,
+          role: serviceObj.createdBy.role || 'freelancer',
+          rating: serviceObj.createdBy.profile?.rating || serviceObj.createdBy.rating || 0,
+          profilePhoto: serviceObj.createdBy.profile?.avatar || serviceObj.createdBy.profile?.profilePhoto || null
+        };
+        
+        // Keep createdBy for website compatibility
+        // Don't delete it to avoid breaking website
+      }
+      
+      return serviceObj;
+    });
+
     res.json({
-      services,
+      services: transformedServices,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
       total
@@ -52,15 +74,34 @@ const getServicesByCategory = async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
 
     const services = await Service.find({ category, isActive: true })
-      .populate('createdBy', 'name email profile.avatar')
+      .populate('createdBy', 'name email profile role')
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
 
     const total = await Service.countDocuments({ category, isActive: true });
 
+    // Transform services for Android app compatibility
+    const transformedServices = services.map(service => {
+      const serviceObj = service.toObject();
+      
+      // Ensure freelancer data is in the correct format for Android
+      if (serviceObj.createdBy) {
+        serviceObj.freelancer = {
+          _id: serviceObj.createdBy._id,
+          name: serviceObj.createdBy.name,
+          email: serviceObj.createdBy.email,
+          role: serviceObj.createdBy.role || 'freelancer',
+          rating: serviceObj.createdBy.profile?.rating || serviceObj.createdBy.rating || 0,
+          profilePhoto: serviceObj.createdBy.profile?.avatar || serviceObj.createdBy.profile?.profilePhoto || null
+        };
+      }
+      
+      return serviceObj;
+    });
+
     res.json({
-      services,
+      services: transformedServices,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
       total
@@ -75,13 +116,27 @@ const getServicesByCategory = async (req, res) => {
 const getServiceById = async (req, res) => {
   try {
     const service = await Service.findById(req.params.id)
-      .populate('createdBy', 'name email profile');
+      .populate('createdBy', 'name email profile role');
 
     if (!service) {
       return res.status(404).json({ message: 'Service not found' });
     }
 
-    res.json(service);
+    const serviceObj = service.toObject();
+    
+    // Ensure freelancer data is in the correct format for Android
+    if (serviceObj.createdBy) {
+      serviceObj.freelancer = {
+        _id: serviceObj.createdBy._id,
+        name: serviceObj.createdBy.name,
+        email: serviceObj.createdBy.email,
+        role: serviceObj.createdBy.role || 'freelancer',
+        rating: serviceObj.createdBy.profile?.rating || serviceObj.createdBy.rating || 0,
+        profilePhoto: serviceObj.createdBy.profile?.avatar || serviceObj.createdBy.profile?.profilePhoto || null
+      };
+    }
+
+    res.json(serviceObj);
   } catch (error) {
     console.error('Get service error:', error);
     res.status(500).json({ message: 'Server error fetching service' });
@@ -174,6 +229,11 @@ const deleteService = async (req, res) => {
     res.status(500).json({ message: 'Server error deleting service' });
   }
 };
+
+// Log that schema sync is complete
+console.log('✅ Service Controller: Freelancer schema transformation enabled');
+console.log('   - Services now include "freelancer" field for Android compatibility');
+console.log('   - "createdBy" field preserved for website compatibility');
 
 module.exports = {
   getAllServices,

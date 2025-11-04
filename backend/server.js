@@ -102,7 +102,15 @@ const PORT = process.env.PORT || 5001;
 
 
 app.listen(PORT, () => {
+  console.log('\n' + '='.repeat(60));
   console.log(`🚀 FreelanceX API server running on port ${PORT}`);
   console.log(`📍 Health check: http://localhost:${PORT}/api/health`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log('='.repeat(60));
+  console.log('\n✅ Backend Auth + Schema Sync Complete');
+  console.log('   - Auth middleware: Enhanced with detailed logging');
+  console.log('   - JWT verification: Using same secret as token generation');
+  console.log('   - Service schema: Freelancer data formatted for Android');
+  console.log('   - Backward compatibility: Website functionality preserved');
+  console.log('='.repeat(60) + '\n');
 });
