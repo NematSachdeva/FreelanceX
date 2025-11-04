@@ -6,12 +6,31 @@ const User = require('../models/User');
 // Create new order
 const createOrder = async (req, res) => {
   try {
+    console.log('\n=== CREATE ORDER DEBUG ===');
+    console.log('Request body:', req.body);
+    console.log('Authenticated user:', req.user ? {
+      id: req.user._id,
+      email: req.user.email,
+      name: req.user.name
+    } : 'NO USER ATTACHED');
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('❌ Validation errors:', errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { serviceId, requirements, deliveryDate, paymentMethod } = req.body;
+    // Support both mobile app format (serviceId, clientId, freelancerId) and web format
+    const { serviceId, clientId, freelancerId, requirements, deliveryDate, paymentMethod } = req.body;
+
+    // Use authenticated user as buyer (ignore clientId from request for security)
+    if (!req.user || !req.user._id) {
+      console.log('❌ No authenticated user found in request');
+      return res.status(401).json({ message: 'Invalid user session' });
+    }
+    
+    const buyerId = req.user._id;
+    console.log('✅ Using buyer ID from authenticated user:', buyerId);
 
     // Check if service exists
     const service = await Service.findById(serviceId).populate('createdBy');
@@ -19,19 +38,22 @@ const createOrder = async (req, res) => {
       return res.status(404).json({ message: 'Service not found' });
     }
 
+    // Determine seller ID (use freelancerId from request or service.createdBy)
+    const sellerId = freelancerId || service.createdBy._id;
+
     // Check if buyer is not the same as seller
-    if (service.createdBy._id.toString() === req.user._id.toString()) {
+    if (sellerId.toString() === buyerId.toString()) {
       return res.status(400).json({ message: 'You cannot order your own service' });
     }
 
     // Calculate delivery date if not provided
     const calculatedDeliveryDate = deliveryDate || 
-      new Date(Date.now() + service.deliveryTime * 24 * 60 * 60 * 1000);
+      new Date(Date.now() + (service.deliveryTime || 7) * 24 * 60 * 60 * 1000);
 
     const orderData = {
       service: serviceId,
-      buyer: req.user._id,
-      seller: service.createdBy._id,
+      buyer: buyerId,
+      seller: sellerId,
       totalAmount: service.price,
       requirements,
       deliveryDate: calculatedDeliveryDate,
@@ -46,13 +68,18 @@ const createOrder = async (req, res) => {
       .populate('buyer', 'name email')
       .populate('seller', 'name email');
 
+    console.log('✅ Order created successfully:', populatedOrder._id);
+    console.log('=== END CREATE ORDER ===\n');
+    
     res.status(201).json({
       message: 'Order created successfully',
       order: populatedOrder
     });
   } catch (error) {
-    console.error('Create order error:', error);
-    res.status(500).json({ message: 'Server error creating order' });
+    console.error('❌ Create order error:', error);
+    console.error('Error stack:', error.stack);
+    console.log('=== END CREATE ORDER ===\n');
+    res.status(500).json({ message: 'Server error creating order', error: error.message });
   }
 };
 
