@@ -47,8 +47,25 @@ const createOrder = async (req, res) => {
     }
 
     // Calculate delivery date if not provided
-    const calculatedDeliveryDate = deliveryDate || 
-      new Date(Date.now() + (service.deliveryTime || 7) * 24 * 60 * 60 * 1000);
+    let calculatedDeliveryDate = deliveryDate;
+    if (!calculatedDeliveryDate) {
+      // Parse delivery time from service (e.g., "5 days", "1 week", "2 weeks")
+      const deliveryTimeStr = service.deliveryTime || '7 days';
+      let days = 7; // default
+      
+      if (deliveryTimeStr.includes('day')) {
+        const match = deliveryTimeStr.match(/(\d+)\s*day/);
+        days = match ? parseInt(match[1]) : 7;
+      } else if (deliveryTimeStr.includes('week')) {
+        const match = deliveryTimeStr.match(/(\d+)\s*week/);
+        days = match ? parseInt(match[1]) * 7 : 7;
+      } else if (deliveryTimeStr.includes('month')) {
+        const match = deliveryTimeStr.match(/(\d+)\s*month/);
+        days = match ? parseInt(match[1]) * 30 : 30;
+      }
+      
+      calculatedDeliveryDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+    }
 
     const orderData = {
       service: serviceId,
@@ -117,8 +134,15 @@ const getUserOrders = async (req, res) => {
 
     const total = await Order.countDocuments(query);
 
+    // Transform orders to include id field for frontend compatibility
+    const transformedOrders = orders.map(order => {
+      const orderObj = order.toObject();
+      orderObj.id = orderObj._id.toString();
+      return orderObj;
+    });
+
     res.json({
-      orders,
+      orders: transformedOrders,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
       total
@@ -132,6 +156,9 @@ const getUserOrders = async (req, res) => {
 // Get single order
 const getOrderById = async (req, res) => {
   try {
+    console.log('🔍 Getting order by ID:', req.params.id);
+    console.log('👤 User requesting:', req.user._id.toString());
+    
     const order = await Order.findById(req.params.id)
       .populate('service', 'title description price category')
       .populate('buyer', 'name email profile')
@@ -139,20 +166,30 @@ const getOrderById = async (req, res) => {
       .populate('messages.sender', 'name email');
 
     if (!order) {
+      console.log('❌ Order not found in database');
       return res.status(404).json({ message: 'Order not found' });
     }
+
+    console.log('✅ Order found:', order._id.toString());
+    console.log('👥 Order participants - Buyer:', order.buyer?._id?.toString(), 'Seller:', order.seller?._id?.toString());
 
     // Check if user is involved in this order
     const isInvolved = order.buyer._id.toString() === req.user._id.toString() ||
                       order.seller._id.toString() === req.user._id.toString();
 
     if (!isInvolved) {
+      console.log('❌ User not authorized to view this order');
       return res.status(403).json({ message: 'Not authorized to view this order' });
     }
 
-    res.json(order);
+    // Transform order to include id field for frontend compatibility
+    const orderObj = order.toObject();
+    orderObj.id = orderObj._id.toString();
+
+    console.log('✅ Returning order to frontend');
+    res.json(orderObj);
   } catch (error) {
-    console.error('Get order error:', error);
+    console.error('❌ Get order error:', error);
     res.status(500).json({ message: 'Server error fetching order' });
   }
 };
@@ -314,20 +351,30 @@ const getClientOrders = async (req, res) => {
 // Get freelancer's orders
 const getFreelancerOrders = async (req, res) => {
   try {
-    const freelancerId = req.params.id;
+    // Use provided ID or current user's ID
+    const freelancerId = req.params.id || req.user._id;
     const { page = 1, limit = 10 } = req.query;
 
-    const orders = await Order.find({ freelancerId })
-      .populate('serviceId', 'title image price')
-      .populate('clientId', 'name profilePhoto')
+    // Query using seller field (which is the freelancer)
+    const orders = await Order.find({ seller: freelancerId })
+      .populate('service', 'title image price')
+      .populate('buyer', 'name email profile.avatar')
+      .populate('seller', 'name email profile.avatar')
       .sort({ createdAt: -1 })
       .limit(limit * 1)
       .skip((page - 1) * limit);
 
-    const total = await Order.countDocuments({ freelancerId });
+    const total = await Order.countDocuments({ seller: freelancerId });
+
+    // Transform orders to include id field for frontend compatibility
+    const transformedOrders = orders.map(order => {
+      const orderObj = order.toObject();
+      orderObj.id = orderObj._id.toString();
+      return orderObj;
+    });
 
     res.json({
-      orders,
+      orders: transformedOrders,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
       total

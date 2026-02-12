@@ -7,7 +7,7 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { api, authHeader } from "@/lib/api"
+import { api } from "@/lib/api"
 
 export default function BecomeSellerPage() {
   const router = useRouter()
@@ -23,12 +23,19 @@ export default function BecomeSellerPage() {
     setError(null)
     setSuccess(null)
     try {
-      await api.post("/sellers", { name: displayName, bio }, { headers: { ...authHeader() } })
+      const response = await api.post("/sellers", { name: displayName, bio })
       setSuccess("Seller profile created!")
+      
+      // Update user data in localStorage
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user))
+        // Trigger auth change event for navbar
+        window.dispatchEvent(new Event('authChange'))
+      }
+      
       router.push("/dashboard/seller")
-    } catch (e) {
-      setError("You must be signed in to become a seller.")
-      router.push("/auth/signin")
+    } catch (e: any) {
+      setError(e.message || "Failed to create seller profile.")
     } finally {
       setLoading(false)
     }

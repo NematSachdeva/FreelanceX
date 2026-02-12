@@ -12,6 +12,7 @@ const serviceRoutes = require('./routes/services');
 const userRoutes = require('./routes/users');
 const orderRoutes = require('./routes/orders');
 const dashboardRoutes = require('./routes/dashboard');
+const sellerRoutes = require('./routes/sellers');
 
 const app = express();
 
@@ -51,7 +52,8 @@ app.get('/', (req, res) => {
       services: '/api/services',
       users: '/api/users',
       orders: '/api/orders',
-      dashboard: '/api/dashboard'
+      dashboard: '/api/dashboard',
+      sellers: '/api/sellers'
     }
   });
 });
@@ -73,6 +75,7 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/sellers', sellerRoutes);
 
 // 404 handler (must be last)
 app.use('*', (req, res) => {

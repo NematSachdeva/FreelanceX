@@ -34,7 +34,7 @@ export function ServiceCard({ service }: { service: Service }) {
           </Link>
           <p className="text-sm text-muted-foreground line-clamp-2">{desc}</p>
           <div className="text-sm text-muted-foreground">
-            {service.seller?.name ?? "Seller"} • ⭐ {service.rating ?? 5} • From ${service.price}
+            {service.seller?.name ?? "Seller"} • ⭐ {service.rating ?? 5} • From ₹{service.price}
           </div>
           <div className="pt-1">
             <Button asChild size="sm" variant="outline" aria-label="View Details">

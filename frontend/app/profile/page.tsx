@@ -278,7 +278,7 @@ export default function ProfilePage() {
                         className="flex-1 border-b border-gray-300 focus:border-blue-600 focus:outline-none"
                       />
                     ) : (
-                      <span>${user.profile?.hourlyRate || 0}/hour</span>
+                      <span>₹{user.profile?.hourlyRate || 0}/hour</span>
                     )}
                   </div>
                 )}

@@ -8,8 +8,8 @@ import { getToken } from "@/lib/auth"
 import type { Order } from "@/types"
 
 const fetchOrders = async () => {
-  const res = await api.get("/orders", { headers: { ...authHeader() } })
-  return (res.data?.items ?? []) as Order[]
+  const res = await api.get("/orders")
+  return (res.data?.orders ?? []) as Order[]
 }
 
 export default function UserDashboardPage() {
@@ -24,6 +24,8 @@ export default function UserDashboardPage() {
       setAuthed(true)
     }
   }, [router])
+
+  console.log('🎯 Component state - authed:', authed, 'data:', data);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">

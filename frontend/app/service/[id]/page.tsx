@@ -174,7 +174,7 @@ export default function ServiceDetailsPage() {
               <div className="mb-6">
                 <div className="text-sm text-gray-600 mb-1">Starting at</div>
                 <div className="text-4xl font-bold text-gray-900 mb-4">
-                  ${service.price}
+                  ₹{service.price}
                 </div>
               </div>
 
@@ -243,7 +243,7 @@ export default function ServiceDetailsPage() {
                     {freelancer.hourlyRate && (
                       <div className="flex items-center gap-2 text-gray-600">
                         <DollarSign className="w-4 h-4" />
-                        <span>${freelancer.hourlyRate}/hr</span>
+                        <span>₹{freelancer.hourlyRate}/hr</span>
                       </div>
                     )}
                     {freelancer.experience && (

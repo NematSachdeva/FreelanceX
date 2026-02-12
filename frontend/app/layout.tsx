@@ -2,10 +2,10 @@ import type React from "react"
 import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
-import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
+import { ThemeProvider } from "@/components/theme-provider"
 import { Suspense } from "react"
 import ToastProvider from "@/components/ToastProvider"
 
@@ -21,15 +21,21 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Navbar />
-          <main className="min-h-[70vh]">{children}</main>
-          <Footer />
-          <Analytics />
-          <ToastProvider />
-        </Suspense>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Suspense fallback={<div>Loading...</div>}>
+            <Navbar />
+            <main className="min-h-[70vh]">{children}</main>
+            <Footer />
+            <ToastProvider />
+          </Suspense>
+        </ThemeProvider>
       </body>
     </html>
   )

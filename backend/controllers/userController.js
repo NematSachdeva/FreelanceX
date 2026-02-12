@@ -144,10 +144,32 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+// Delete user account
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    
+    // Delete user's services
+    await Service.deleteMany({ createdBy: userId });
+    
+    // Delete user account
+    await User.findByIdAndDelete(userId);
+    
+    res.json({ 
+      message: 'Account deleted successfully',
+      success: true 
+    });
+  } catch (error) {
+    console.error('Delete account error:', error);
+    res.status(500).json({ message: 'Server error deleting account' });
+  }
+};
+
 module.exports = {
   getAllFreelancers,
   getFreelancerById,
   updateProfile,
   getCurrentUser,
-  getUserProfile
+  getUserProfile,
+  deleteAccount
 };

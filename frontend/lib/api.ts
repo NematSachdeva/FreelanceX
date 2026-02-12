@@ -9,6 +9,12 @@ const getAuthToken = () => {
   return null;
 };
 
+// Helper function to get auth headers
+export const authHeader = () => {
+  const token = getAuthToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 // Helper function to make API calls
 const apiCall = async (endpoint, options = {}) => {
   const url = `${API_BASE}${endpoint}`;
@@ -275,4 +281,10 @@ export default {
   dashboardAPI,
   healthCheck,
   api,
+};
+
+// Additional helper functions for backward compatibility
+export const getServices = async () => {
+  const result = await apiCall('/services');
+  return result.items || result;
 };

@@ -94,7 +94,7 @@ export default function OrderModal({ service, onClose }: OrderModalProps) {
                 by {service.createdBy?.name || service.freelancerId?.name}
               </p>
               <div className="flex items-center gap-4 text-sm">
-                <span className="font-bold text-gray-900">${service.price}</span>
+                <span className="font-bold text-gray-900">₹{service.price}</span>
                 <span className="text-gray-600">Delivery: {service.deliveryTime}</span>
               </div>
             </div>
@@ -150,16 +150,16 @@ export default function OrderModal({ service, onClose }: OrderModalProps) {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Service Price</span>
-                <span className="font-medium">${service.price}</span>
+                <span className="font-medium">₹{service.price}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Service Fee (10%)</span>
-                <span className="font-medium">${(service.price * 0.1).toFixed(2)}</span>
+                <span className="font-medium">₹{(service.price * 0.1).toFixed(2)}</span>
               </div>
               <div className="pt-2 border-t flex justify-between">
                 <span className="font-semibold text-gray-900">Total</span>
                 <span className="font-bold text-lg text-gray-900">
-                  ${(service.price * 1.1).toFixed(2)}
+                  ₹{(service.price * 1.1).toFixed(2)}
                 </span>
               </div>
             </div>

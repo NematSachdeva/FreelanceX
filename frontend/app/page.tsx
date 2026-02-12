@@ -18,15 +18,26 @@ export default function HomePage() {
 
   const loadData = async () => {
     try {
+      // Test API connection first
+      const healthCheck = await fetch('http://localhost:5001/api/health');
+      if (!healthCheck.ok) {
+        console.warn('Backend API not available, using empty data');
+        setLoading(false);
+        return;
+      }
+
       const [freelancersRes, servicesRes] = await Promise.all([
-        usersAPI.getFreelancers({ limit: 6 }),
-        servicesAPI.getAll({ limit: 6 })
+        usersAPI.getFreelancers({ limit: 6 }).catch(() => ({ freelancers: [] })),
+        servicesAPI.getAll({ limit: 6 }).catch(() => ({ services: [] }))
       ]);
       
       setTopFreelancers(freelancersRes.freelancers || []);
       setFeaturedServices(servicesRes.services || []);
     } catch (error) {
       console.error('Error loading data:', error);
+      // Set empty arrays to prevent rendering issues
+      setTopFreelancers([]);
+      setFeaturedServices([]);
     } finally {
       setLoading(false);
     }
@@ -172,7 +183,7 @@ export default function HomePage() {
                     </div>
                     <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
                       <DollarSign className="w-4 h-4" />
-                      <span>${freelancer.hourlyRate || 0}/hr</span>
+                      <span>₹{freelancer.hourlyRate || 0}/hr</span>
                     </div>
                   </div>
                 </Link>
@@ -226,7 +237,7 @@ export default function HomePage() {
                     </div>
                     <div className="text-right">
                       <div className="text-sm text-gray-500">Starting at</div>
-                      <div className="text-lg font-bold text-gray-900">${service.price}</div>
+                      <div className="text-lg font-bold text-gray-900">₹{service.price}</div>
                     </div>
                   </div>
                 </div>

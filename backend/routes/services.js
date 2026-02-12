@@ -29,8 +29,10 @@ const serviceValidation = [
     'consulting'
   ]).withMessage('Please select a valid category'),
   body('price').isNumeric().isFloat({ min: 0 }).withMessage('Price must be a positive number'),
-  body('deliveryTime').isInt({ min: 1 }).withMessage('Delivery time must be at least 1 day'),
-  body('contactInfo').trim().notEmpty().withMessage('Contact information is required')
+  body('deliveryTime').trim().notEmpty().withMessage('Delivery time is required'),
+  body('image').optional().isURL().withMessage('Image must be a valid URL'),
+  body('tags').optional().isArray().withMessage('Tags must be an array'),
+  body('requirements').optional().trim()
 ];
 
 // Public routes

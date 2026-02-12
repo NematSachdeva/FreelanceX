@@ -78,9 +78,9 @@ export default function OrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen bg-background py-8">
         <div className="max-w-6xl mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">My Orders</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-8">My Orders</h1>
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <OrderCardSkeleton key={i} />
@@ -92,9 +92,9 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">My Orders</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">My Orders</h1>
         
         {orders.length === 0 ? (
           <EmptyState
@@ -108,7 +108,7 @@ export default function OrdersPage() {
             {userRole !== 'freelancer' && (
               <Link
                 href="/explore"
-                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition mt-4"
+                className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition mt-4"
               >
                 Browse Services
               </Link>
@@ -135,12 +135,13 @@ export default function OrdersPage() {
 
               return (
                 <motion.div 
-                  key={order._id} 
+                  key={order.id} 
                   variants={{
                     hidden: { opacity: 0, y: 20 },
                     visible: { opacity: 1, y: 0 }
                   }}
-                  className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition"
+                  className="bg-card rounded-lg p-6 shadow-sm hover:shadow-md transition border cursor-pointer"
+                  onClick={() => router.push(`/orders/${order.id}`)}
                 >
                   <div className="flex gap-4">
                     {/* Service Image */}
@@ -156,11 +157,11 @@ export default function OrdersPage() {
                         <div>
                           <Link
                             href={`/service/${service?._id}`}
-                            className="font-semibold text-lg text-gray-900 hover:text-blue-600"
+                            className="font-semibold text-lg text-foreground hover:text-primary"
                           >
                             {service?.title}
                           </Link>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-muted-foreground">
                             {userRole === 'freelancer' ? 'Client' : 'Freelancer'}: {otherUser?.name}
                           </p>
                         </div>
@@ -174,13 +175,13 @@ export default function OrdersPage() {
                         </span>
                       </div>
 
-                      <p className="text-sm text-gray-700 mb-3 line-clamp-2">
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                         {order.requirements}
                       </p>
 
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
-                          <span className="font-semibold text-gray-900">${order.totalAmount}</span>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <span className="font-semibold text-foreground">₹{order.totalAmount}</span>
                           <span className="flex items-center gap-1">
                             <Clock className="w-4 h-4" />
                             {new Date(order.createdAt).toLocaleDateString()}
@@ -191,7 +192,10 @@ export default function OrdersPage() {
                           {/* Freelancer Actions */}
                           {userRole === 'freelancer' && order.status === 'in-progress' && (
                             <button
-                              onClick={() => handleComplete(order._id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleComplete(order.id);
+                              }}
                               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
                             >
                               <CheckCircle className="w-4 h-4" />
@@ -202,8 +206,11 @@ export default function OrdersPage() {
                           {/* Client Actions */}
                           {userRole === 'client' && order.status === 'completed' && !order.rating && (
                             <button
-                              onClick={() => setReviewModal(order)}
-                              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setReviewModal(order);
+                              }}
+                              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition flex items-center gap-2"
                             >
                               <Star className="w-4 h-4" />
                               Leave Review
@@ -244,13 +251,13 @@ export default function OrdersPage() {
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-lg max-w-md w-full p-6"
+              className="bg-popover rounded-lg max-w-md w-full p-6 border"
             >
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold">Leave a Review</h3>
+                <h3 className="text-xl font-bold text-popover-foreground">Leave a Review</h3>
                 <button
                   onClick={() => setReviewModal(null)}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -259,7 +266,7 @@ export default function OrdersPage() {
             <form onSubmit={handleReviewSubmit}>
               {/* Rating */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-popover-foreground mb-2">
                   Rating
                 </label>
                 <div className="flex gap-2">
@@ -284,7 +291,7 @@ export default function OrdersPage() {
 
               {/* Review Text */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-popover-foreground mb-2">
                   Review (Optional)
                 </label>
                 <textarea
@@ -292,7 +299,7 @@ export default function OrdersPage() {
                   onChange={(e) => setReviewData({ ...reviewData, review: e.target.value })}
                   placeholder="Share your experience..."
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
                 />
               </div>
 
@@ -301,7 +308,7 @@ export default function OrdersPage() {
                 <button
                   type="button"
                   onClick={() => setReviewModal(null)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                  className="flex-1 px-4 py-2 border border-border text-muted-foreground rounded-lg hover:bg-accent"
                   disabled={submitting}
                 >
                   Cancel
@@ -309,7 +316,7 @@ export default function OrdersPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
                 >
                   {submitting ? 'Submitting...' : 'Submit Review'}
                 </button>

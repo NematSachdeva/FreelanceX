@@ -9,6 +9,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Ensure proper asset loading
+  assetPrefix: process.env.NODE_ENV === 'production' ? undefined : '',
 }
 
 export default nextConfig

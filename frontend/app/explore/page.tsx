@@ -76,43 +76,43 @@ export default function ExplorePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Explore Services</h1>
-          <p className="text-gray-600">Find the perfect freelancer for your project</p>
+          <h1 className="text-4xl font-bold text-foreground mb-2">Explore Services</h1>
+          <p className="text-muted-foreground">Find the perfect freelancer for your project</p>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+        <div className="bg-card rounded-lg shadow-sm border p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Search
               </label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <input
                   type="text"
                   placeholder="Search services..."
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Category
               </label>
               <select
                 value={filters.category}
                 onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 {categories.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -124,13 +124,13 @@ export default function ExplorePage() {
 
             {/* Sort */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Sort By
               </label>
               <select
                 value={filters.sortBy}
                 onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="newest">Newest</option>
                 <option value="rating">Highest Rated</option>
@@ -142,8 +142,8 @@ export default function ExplorePage() {
 
           {/* Price Range */}
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Price Range: ${filters.minPrice} - ${filters.maxPrice}
+            <label className="block text-sm font-medium text-foreground mb-2">
+              Price Range: ₹{filters.minPrice} - ₹{filters.maxPrice}
             </label>
             <div className="flex gap-4 items-center">
               <input
@@ -170,7 +170,7 @@ export default function ExplorePage() {
 
         {/* Results Count */}
         <div className="mb-6">
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {loading ? 'Loading...' : `${services.length} services found`}
           </p>
         </div>
@@ -213,7 +213,7 @@ export default function ExplorePage() {
                   visible: { opacity: 1, y: 0 }
                 }}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className="bg-white rounded-lg shadow-sm hover:shadow-lg transition overflow-hidden group"
+                className="bg-card rounded-lg shadow-sm hover:shadow-lg transition overflow-hidden group border"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -223,7 +223,7 @@ export default function ExplorePage() {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
+                  <h3 className="font-semibold text-lg text-foreground mb-2 line-clamp-2">
                     {service.title}
                   </h3>
                   
@@ -234,7 +234,7 @@ export default function ExplorePage() {
                       alt={service.createdBy?.name}
                       className="w-6 h-6 rounded-full object-cover"
                     />
-                    <span className="text-sm text-gray-600">{service.createdBy?.name}</span>
+                    <span className="text-sm text-muted-foreground">{service.createdBy?.name}</span>
                   </div>
 
                   {/* Rating & Delivery */}
@@ -243,7 +243,7 @@ export default function ExplorePage() {
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                       <span className="text-sm font-medium">{service.rating || 0}</span>
                     </div>
-                    <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <Clock className="w-4 h-4" />
                       <span>{service.deliveryTime}</span>
                     </div>
@@ -251,21 +251,21 @@ export default function ExplorePage() {
 
                   {/* Price */}
                   <div className="flex items-center justify-between mb-4">
-                    <div className="text-sm text-gray-500">Starting at</div>
-                    <div className="text-xl font-bold text-gray-900">${service.price}</div>
+                    <div className="text-sm text-muted-foreground">Starting at</div>
+                    <div className="text-xl font-bold text-foreground">₹{service.price}</div>
                   </div>
 
                   {/* Actions */}
                   <div className="flex gap-2">
                     <Link
                       href={`/service/${service._id}`}
-                      className="flex-1 px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition text-center"
+                      className="flex-1 px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition text-center"
                     >
                       View Details
                     </Link>
                     <button
                       onClick={() => handleOrderClick(service)}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                      className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition"
                     >
                       Order Now
                     </button>

@@ -19,7 +19,7 @@ const router = express.Router();
 // Validation rules
 const createOrderValidation = [
   body('serviceId').isMongoId().withMessage('Valid service ID is required'),
-  body('requirements').trim().isLength({ min: 10 }).withMessage('Requirements must be at least 10 characters'),
+  body('requirements').trim().isLength({ min: 5 }).withMessage('Requirements must be at least 5 characters'),
   body('deliveryDate').optional().isISO8601().withMessage('Valid delivery date is required'),
   body('paymentMethod').optional().isIn(['credit-card', 'paypal', 'bank-transfer', 'crypto']).withMessage('Invalid payment method')
 ];
@@ -43,8 +43,9 @@ router.use(auth);
 // Order routes
 router.post('/', createOrderValidation, createOrder);
 router.get('/', getUserOrders);
+router.get('/freelancer', getFreelancerOrders); // Get orders for current freelancer
 router.get('/client/:id', getClientOrders);
-router.get('/freelancer/:id', getFreelancerOrders);
+router.get('/freelancer/:id', getFreelancerOrders); // Get orders for specific freelancer
 router.get('/:id', getOrderById);
 router.put('/:id/status', updateStatusValidation, updateOrderStatus);
 router.put('/:id/complete', completeOrder);

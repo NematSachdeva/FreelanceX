@@ -27,8 +27,17 @@ export default function SignInPage() {
         setToken(result.token)
         // Store user data
         localStorage.setItem('user', JSON.stringify(result.user))
-        // Refresh the page to update navbar
-        window.location.href = "/dashboard"
+        
+        // Trigger auth change event for navbar
+        window.dispatchEvent(new Event('authChange'))
+        
+        // Redirect based on user role
+        const userRole = result.user.role || result.user.accountType
+        if (userRole === 'freelancer') {
+          router.push('/dashboard/seller')
+        } else {
+          router.push('/dashboard/user')
+        }
       } else {
         setError("Invalid response from server")
       }

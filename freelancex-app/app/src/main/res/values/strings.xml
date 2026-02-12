@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FreelanceX</string>
+    
+    <!-- Authentication -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="sign_in_subtitle">Sign in to your account</string>
+    <string name="join_freelancex">Join FreelanceX</string>
+    <string name="create_account_subtitle">Create your account to get started</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="full_name">Full Name</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="create_account">Create Account</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="already_have_account">Already have an account?</string>
+    
+    <!-- Navigation -->
+    <string name="home">Home</string>
+    <string name="explore">Explore</string>
+    <string name="orders">Orders</string>
+    <string name="profile">Profile</string>
+    
+    <!-- Home Screen -->
+    <string name="find_perfect_freelancer">Find the perfect freelancer</string>
+    <string name="discover_professionals">Discover talented professionals for your next project</string>
+    <string name="search_services">Search for services...</string>
+    <string name="browse_categories">Browse Categories</string>
+    <string name="featured_services">Featured Services</string>
+    <string name="top_freelancers">Top Freelancers</string>
+    <string name="view_all">View All</string>
+    
+    <!-- Profile -->
+    <string name="logout">Logout</string>
+    <string name="welcome_user">Welcome, %1$s!</string>
+    <string name="role_label">Role: %1$s</string>
+    
+    <!-- Common -->
+    <string name="loading">Loading...</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+    <string name="coming_soon">Coming Soon</string>
+    
+    <!-- Demo accounts -->
+    <string name="demo_accounts">Demo Accounts</string>
+    <string name="demo_freelancer">Freelancer: alex@freelancex.com / password123</string>
+    <string name="demo_client">Client: john@client.com / password123</string>
+</resources>

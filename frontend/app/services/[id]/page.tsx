@@ -40,7 +40,7 @@ export default function ServiceDetailPage() {
   if (isLoading) return <div className="mx-auto max-w-4xl px-4 py-8 text-muted-foreground">Loading service...</div>
   if (!svc) return <div className="mx-auto max-w-4xl px-4 py-8 text-muted-foreground">Service not found.</div>
 
-  const priceText = `$${svc.price}+`
+  const priceText = `₹${svc.price}+`
   const sellerName = svc.seller?.name ?? "Seller"
 
   return (

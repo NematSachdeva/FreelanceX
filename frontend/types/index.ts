@@ -24,8 +24,11 @@ export type Service = {
   price: number
   rating?: number
   seller?: Pick<User, "id" | "name" | "avatar">
+  freelancer?: Pick<User, "id" | "name" | "avatar"> // For Android compatibility
   category?: string
   tags?: string[]
+  createdAt: string
+  updatedAt?: string
 }
 
 export type Order = {
@@ -33,6 +36,19 @@ export type Order = {
   serviceId: string
   service?: Pick<Service, "title" | "thumbnail" | "price">
   userId?: string
-  status: "pending" | "in_progress" | "completed" | "cancelled"
-  createdAt?: string
+  client?: Pick<User, "id" | "name" | "email" | "avatar">
+  freelancer?: Pick<User, "id" | "name" | "email" | "avatar">
+  status: "pending" | "in-progress" | "completed" | "cancelled"
+  price?: number
+  requirements?: string
+  rating?: number
+  review?: string
+  messages?: Array<{
+    id: string
+    senderId: string
+    message: string
+    createdAt: string
+  }>
+  createdAt: string
+  updatedAt?: string
 }

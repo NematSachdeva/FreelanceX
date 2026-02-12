@@ -5,7 +5,8 @@ const {
   getFreelancerById,
   updateProfile,
   getCurrentUser,
-  getUserProfile
+  getUserProfile,
+  deleteAccount
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -13,6 +14,7 @@ const router = express.Router();
 // Protected routes (must come first to avoid conflicts)
 router.get('/profile/me', auth, getCurrentUser);
 router.put('/profile', auth, updateProfile);
+router.delete('/me', auth, deleteAccount);
 
 // Public routes
 router.get('/', getAllFreelancers);

@@ -153,7 +153,8 @@ const createService = async (req, res) => {
 
     const serviceData = {
       ...req.body,
-      createdBy: req.user._id
+      createdBy: req.user._id,
+      freelancerId: req.user._id  // Add freelancerId field
     };
 
     const service = new Service(serviceData);
