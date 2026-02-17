@@ -163,9 +163,25 @@ const createService = async (req, res) => {
     const populatedService = await Service.findById(service._id)
       .populate('createdBy', 'name email profile.avatar');
 
+    const serviceObj = populatedService.toObject();
+    
+    // Add freelancer field for Android compatibility
+    if (serviceObj.createdBy) {
+      serviceObj.freelancer = {
+        _id: serviceObj.createdBy._id,
+        name: serviceObj.createdBy.name,
+        email: serviceObj.createdBy.email,
+        role: serviceObj.createdBy.role || 'freelancer',
+        rating: serviceObj.createdBy.profile?.rating || serviceObj.createdBy.rating || 0,
+        profilePhoto: serviceObj.createdBy.profile?.avatar || serviceObj.createdBy.profile?.profilePhoto || null
+      };
+    }
+
     res.status(201).json({
+      success: true,
       message: 'Service created successfully',
-      service: populatedService
+      data: serviceObj,
+      service: serviceObj // Keep for backward compatibility
     });
   } catch (error) {
     console.error('Create service error:', error);
@@ -231,6 +247,57 @@ const deleteService = async (req, res) => {
   }
 };
 
+// Get user's own services
+const getMyServices = async (req, res) => {
+  try {
+    console.log('📋 Getting services for user:', req.user._id);
+    
+    const { page = 1, limit = 100 } = req.query;
+    
+    // Find services created by the authenticated user
+    const query = { createdBy: req.user._id };
+    
+    const services = await Service.find(query)
+      .populate('createdBy', 'name email profile role')
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+
+    const total = await Service.countDocuments(query);
+
+    console.log(`✅ Found ${services.length} services for user ${req.user._id}`);
+
+    // Transform services for Android app compatibility
+    const transformedServices = services.map(service => {
+      const serviceObj = service.toObject();
+      
+      // Ensure freelancer data is in the correct format for Android
+      if (serviceObj.createdBy) {
+        serviceObj.freelancer = {
+          _id: serviceObj.createdBy._id,
+          name: serviceObj.createdBy.name,
+          email: serviceObj.createdBy.email,
+          role: serviceObj.createdBy.role || 'freelancer',
+          rating: serviceObj.createdBy.profile?.rating || serviceObj.createdBy.rating || 0,
+          profilePhoto: serviceObj.createdBy.profile?.avatar || serviceObj.createdBy.profile?.profilePhoto || null
+        };
+      }
+      
+      return serviceObj;
+    });
+
+    res.json({
+      services: transformedServices,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      total
+    });
+  } catch (error) {
+    console.error('❌ Get my services error:', error);
+    res.status(500).json({ message: 'Server error fetching your services' });
+  }
+};
+
 // Log that schema sync is complete
 console.log('✅ Service Controller: Freelancer schema transformation enabled');
 console.log('   - Services now include "freelancer" field for Android compatibility');
@@ -242,5 +309,6 @@ module.exports = {
   getServiceById,
   createService,
   updateService,
-  deleteService
+  deleteService,
+  getMyServices
 };

@@ -85,12 +85,23 @@ const createOrder = async (req, res) => {
       .populate('buyer', 'name email')
       .populate('seller', 'name email');
 
+    // Transform for mobile app compatibility
+    const orderResponse = populatedOrder.toObject();
+    orderResponse.serviceId = orderResponse.service?._id?.toString() || orderResponse.service;
+    orderResponse.serviceTitle = orderResponse.service?.title || '';
+    orderResponse.buyerId = orderResponse.buyer?._id?.toString() || orderResponse.buyer;
+    orderResponse.buyerName = orderResponse.buyer?.name || '';
+    orderResponse.sellerId = orderResponse.seller?._id?.toString() || orderResponse.seller;
+    orderResponse.sellerName = orderResponse.seller?.name || '';
+
     console.log('✅ Order created successfully:', populatedOrder._id);
     console.log('=== END CREATE ORDER ===\n');
     
     res.status(201).json({
+      success: true,
       message: 'Order created successfully',
-      order: populatedOrder
+      data: orderResponse,
+      order: orderResponse // Keep for backward compatibility
     });
   } catch (error) {
     console.error('❌ Create order error:', error);
@@ -134,10 +145,16 @@ const getUserOrders = async (req, res) => {
 
     const total = await Order.countDocuments(query);
 
-    // Transform orders to include id field for frontend compatibility
+    // Transform orders to include id field and mobile app compatibility fields
     const transformedOrders = orders.map(order => {
       const orderObj = order.toObject();
       orderObj.id = orderObj._id.toString();
+      orderObj.serviceId = orderObj.service?._id?.toString() || orderObj.service;
+      orderObj.serviceTitle = orderObj.service?.title || '';
+      orderObj.buyerId = orderObj.buyer?._id?.toString() || orderObj.buyer;
+      orderObj.buyerName = orderObj.buyer?.name || '';
+      orderObj.sellerId = orderObj.seller?._id?.toString() || orderObj.seller;
+      orderObj.sellerName = orderObj.seller?.name || '';
       return orderObj;
     });
 
@@ -185,6 +202,12 @@ const getOrderById = async (req, res) => {
     // Transform order to include id field for frontend compatibility
     const orderObj = order.toObject();
     orderObj.id = orderObj._id.toString();
+    orderObj.serviceId = orderObj.service?._id?.toString() || orderObj.service;
+    orderObj.serviceTitle = orderObj.service?.title || '';
+    orderObj.buyerId = orderObj.buyer?._id?.toString() || orderObj.buyer;
+    orderObj.buyerName = orderObj.buyer?.name || '';
+    orderObj.sellerId = orderObj.seller?._id?.toString() || orderObj.seller;
+    orderObj.sellerName = orderObj.seller?.name || '';
 
     console.log('✅ Returning order to frontend');
     res.json(orderObj);
@@ -222,9 +245,20 @@ const updateOrderStatus = async (req, res) => {
       .populate('buyer', 'name email')
       .populate('seller', 'name email');
 
+    // Transform for mobile app compatibility
+    const orderResponse = updatedOrder.toObject();
+    orderResponse.serviceId = orderResponse.service?._id?.toString() || orderResponse.service;
+    orderResponse.serviceTitle = orderResponse.service?.title || '';
+    orderResponse.buyerId = orderResponse.buyer?._id?.toString() || orderResponse.buyer;
+    orderResponse.buyerName = orderResponse.buyer?.name || '';
+    orderResponse.sellerId = orderResponse.seller?._id?.toString() || orderResponse.seller;
+    orderResponse.sellerName = orderResponse.seller?.name || '';
+
     res.json({
+      success: true,
       message: 'Order status updated successfully',
-      order: updatedOrder
+      data: orderResponse,
+      order: orderResponse // Keep for backward compatibility
     });
   } catch (error) {
     console.error('Update order status error:', error);
@@ -312,8 +346,10 @@ const addOrderRating = async (req, res) => {
     await order.save();
 
     res.json({
+      success: true,
       message: 'Rating added successfully',
-      rating: order.rating
+      data: order,
+      rating: order.rating // Keep for backward compatibility
     });
   } catch (error) {
     console.error('Add order rating error:', error);
@@ -366,10 +402,16 @@ const getFreelancerOrders = async (req, res) => {
 
     const total = await Order.countDocuments({ seller: freelancerId });
 
-    // Transform orders to include id field for frontend compatibility
+    // Transform orders to include id field and mobile app compatibility fields
     const transformedOrders = orders.map(order => {
       const orderObj = order.toObject();
       orderObj.id = orderObj._id.toString();
+      orderObj.serviceId = orderObj.service?._id?.toString() || orderObj.service;
+      orderObj.serviceTitle = orderObj.service?.title || '';
+      orderObj.buyerId = orderObj.buyer?._id?.toString() || orderObj.buyer;
+      orderObj.buyerName = orderObj.buyer?.name || '';
+      orderObj.sellerId = orderObj.seller?._id?.toString() || orderObj.seller;
+      orderObj.sellerName = orderObj.seller?.name || '';
       return orderObj;
     });
 

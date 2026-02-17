@@ -7,7 +7,8 @@ const {
   getServiceById,
   createService,
   updateService,
-  deleteService
+  deleteService,
+  getMyServices
 } = require('../controllers/serviceController');
 
 const router = express.Router();
@@ -38,11 +39,14 @@ const serviceValidation = [
 // Public routes
 router.get('/', getAllServices);
 router.get('/category/:category', getServicesByCategory);
-router.get('/:id', getServiceById);
 
-// Protected routes (require authentication)
+// Protected routes (require authentication) - Must be before /:id
+router.get('/user/my-services', auth, getMyServices);
 router.post('/', auth, serviceValidation, createService);
 router.put('/:id', auth, serviceValidation, updateService);
 router.delete('/:id', auth, deleteService);
+
+// Dynamic ID route must be last
+router.get('/:id', getServiceById);
 
 module.exports = router;
