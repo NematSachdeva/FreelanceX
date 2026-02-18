@@ -67,6 +67,33 @@ export default function CreateServicePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Client-side validation
+    if (formData.title.trim().length < 5) {
+      toast.error('Title must be at least 5 characters');
+      return;
+    }
+    
+    if (formData.description.trim().length < 20) {
+      toast.error('Description must be at least 20 characters');
+      return;
+    }
+    
+    if (!formData.category) {
+      toast.error('Please select a category');
+      return;
+    }
+    
+    if (!formData.price || parseFloat(formData.price) <= 0) {
+      toast.error('Please enter a valid price');
+      return;
+    }
+    
+    if (!formData.deliveryTime) {
+      toast.error('Please select a delivery time');
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -76,12 +103,21 @@ export default function CreateServicePage() {
         tags: formData.tags.filter(tag => tag.trim() !== '')
       };
 
+      console.log('Creating service with data:', serviceData);
+
       await servicesAPI.create(serviceData);
       
       toast.success('Service created successfully! 🎉');
       router.push('/dashboard/seller');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to create service');
+      console.error('Service creation error:', error);
+      
+      // Show detailed error message
+      if (error.message) {
+        toast.error(error.message);
+      } else {
+        toast.error('Failed to create service. Please check all required fields.');
+      }
     } finally {
       setLoading(false);
     }
