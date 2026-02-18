@@ -148,7 +148,12 @@ const createService = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      console.error('❌ Service validation errors:', JSON.stringify(errors.array(), null, 2));
+      console.error('📦 Received data:', JSON.stringify(req.body, null, 2));
+      return res.status(400).json({ 
+        message: errors.array()[0].msg,
+        errors: errors.array() 
+      });
     }
 
     const serviceData = {
